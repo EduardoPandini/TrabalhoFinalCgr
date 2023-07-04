@@ -58,6 +58,7 @@ int main() {
     
     //criação de projetil e vidas
     std::vector<Projectile> projectilesPlayer;
+    std::vector<Projectile> projectilesEnemy;
     std::vector<Vida> vidas;
 
 
@@ -75,8 +76,11 @@ int main() {
     sf::Texture enemyTexture;
     if (!enemyTexture.loadFromFile("sprites/enemy/enemy.png")) {
     }
-    sf::Texture projectileTexture;
-    if (!projectileTexture.loadFromFile("sprites/projeteis/projetilPlayer.png")) {
+    sf::Texture projectileTexturePlayer;
+    if (!projectileTexturePlayer.loadFromFile("sprites/projeteis/projetilPlayer.png")) {
+    }
+    sf::Texture projectileTextureEnemy;
+    if (!projectileTextureEnemy.loadFromFile("sprites/projeteis/projetilEnemy.png")) {
     }
     sf::Texture vidaTexture;
     if (!vidaTexture.loadFromFile("sprites/drops/vida.png")) {
@@ -139,6 +143,9 @@ int main() {
         for(size_t i = 0; i < projectilesPlayer.size(); i++) {
             projectilesPlayer[i].update(dt);
         }
+        for(size_t i = 0; i < projectilesEnemy.size(); i++) {
+            projectilesEnemy[i].update(dt);
+        }
         for(size_t i = 0; i < vidas.size(); i++) {
             vidas[i].update(dt);
         }
@@ -191,7 +198,22 @@ int main() {
                         activeE--;
                     }
                 }
-        }   
+                if (enemies[i].pew()){
+                    projectilesEnemy.emplace_back(enemies[i].getX()+enemies[i].getWidth()/2, enemies[i].getY() + enemies[i].getHeight(), 0.0f, 200.0f, &projectileTextureEnemy);
+                }
+                
+        }
+        for (size_t i = 0; i < projectilesEnemy.size(); i++){
+            if (projectilesEnemy[i].isOutOfScreen()){
+                projectilesEnemy.erase(projectilesEnemy.begin() + i); 
+            }
+            
+            if (projectilesEnemy[i].getHitbox().checkCollision(player.getHitbox())){
+                player.perderVida();
+            }
+            
+        }
+           
 //////////////////////FIM VERIFICAÇÃO DE COLISÕES///////////////////Q
         
          
@@ -199,9 +221,9 @@ int main() {
         //player shooto
         if(shotTimePlayer > shotTimerPlayer){
             shotTimePlayer = 0;
-            projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), 0.0f,-200.0f, &projectileTexture);
-            // projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), 100.0f,-200.0f, &projectileTexture);
-            // projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), -100.f,-200.0f, &projectileTexture);
+            projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), 0.0f,-200.0f, &projectileTexturePlayer);
+            // projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), 100.0f,-200.0f, &projectileTexturePlayer);
+             //projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), -100.f,-200.0f, &projectileTexturePlayer);
             sound.play();
         }else{
             shotTimePlayer += dt;
@@ -232,6 +254,9 @@ int main() {
         
         if (gameState == GameState::GAME) {
             for(const auto& projectile : projectilesPlayer) {   
+                projectile.draw(window);
+            }
+            for(const auto& projectile : projectilesEnemy) {   
                 projectile.draw(window);
             }
             for (const auto& enemy : enemies) {

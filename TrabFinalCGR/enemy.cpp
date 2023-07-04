@@ -3,7 +3,7 @@
 #include <cstdlib> // Para usar rand() e srand()
 
 Enemy::Enemy(float x, float y, sf::Texture* texture)
-    : x(x), y(y), texture(texture), hitbox(x, y, width, height) {
+    : x(x), y(y), texture(texture), hitbox(x, y, width, height), cantShoot(true), shootTimer(0) {
     
     if (texture == nullptr) {
         std::cout << "Erro: Ponteiro de textura nulo!" << std::endl;
@@ -52,6 +52,21 @@ void Enemy::update(float deltaTime) {
 
     sprite.setPosition(x, y);
     hitbox.update(x, y); // Atualiza a posição da hitbox com a nova posição do inimigo
+    if (cantShoot) {
+            shootTimer += deltaTime;
+            if (shootTimer >= shootTime) {
+                cantShoot = false;
+                shootTimer = 0.0f;
+            }
+        }
+}
+
+bool Enemy::pew(){
+    if (!cantShoot){
+        cantShoot = true;
+        return true;
+    }
+    
 }
 
 void Enemy::setPosition(float x, float y) {
@@ -62,7 +77,7 @@ void Enemy::setPosition(float x, float y) {
 }
 
 bool Enemy::isOutOfScreen() const {
-    return y > 1000.0f; // Define o limite superior para remover o inimigo da tela
+    return y > 1000.0f; // Define o limite inferior para remover o inimigo da tela
 }
 
 const Hitbox& Enemy::getHitbox() const {

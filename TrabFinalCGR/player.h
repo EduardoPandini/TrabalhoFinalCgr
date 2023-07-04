@@ -31,6 +31,7 @@ public:
     int getw();
 
 
+
 private:
     float x, y;
     float positionX;

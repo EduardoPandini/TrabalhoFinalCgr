@@ -16,19 +16,21 @@ public:
     float getY();
     float getWidth();
     float getHeight();
-    
+    bool pew();
 
 private:
     float x, y;
-    float width = 200;
-    float height = 200;
+    float width = 100;
+    float height = 100;
     sf::Texture* texture;
     sf::Sprite sprite;
     Hitbox hitbox;
     float velocityX; // Velocidade lateral do inimigo
     float minVelocityX = -100.0f; // Velocidade mínima lateral
     float maxVelocityX = 100.0f;
-        // Método para atualizar o movimento lateral aleatório do inimigo
+    float shootTime = 3;
+    float shootTimer = 0;
+    bool cantShoot;
     void updateHorizontalMovement();
 };
 

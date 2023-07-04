@@ -11,7 +11,7 @@ public:
     void update(float deltaTime);
     void setPosition(float x, float y);
     const Hitbox& getHitbox() const;
-    bool isOutOfScreen() const;
+    bool isOutOfScreen();
     void setvelocityY(float velocityY);
     void setvelocityX(float velocityX);
 private:

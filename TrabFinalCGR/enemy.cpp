@@ -65,8 +65,9 @@ bool Enemy::pew(){
     if (!cantShoot){
         cantShoot = true;
         return true;
+    }else{
+        return false;
     }
-    
 }
 
 void Enemy::setPosition(float x, float y) {

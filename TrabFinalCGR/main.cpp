@@ -129,7 +129,7 @@ int main() {
             backgroundSprite2.move(0, scrollSpeed * dt);
 
 /////////////////////////////////SPAWN DOS INIMIGOS/////////////////////////////////
-        if ( activeE < 5) {
+        if ( activeE < 5) {//rand() % 60 == 0 &&
             activeE++;
             float randomX = static_cast<float>(rand() % 1360); // Gera um valor de x aleatório entre 0 e 1360
             enemies.emplace_back(randomX, -200.0f, &enemyTexture);
@@ -162,8 +162,7 @@ int main() {
             }
             
         }
-        
-        
+
         for(size_t i = 0; i < enemies.size(); i++) {
             enemies[i].update(dt);
             //colisão entre jogador e inimigo
@@ -174,20 +173,17 @@ int main() {
             for(size_t j = 0; j < projectilesPlayer.size(); j++) {
                 if (projectilesPlayer[j].isOutOfScreen()){
                     projectilesPlayer.erase(projectilesPlayer.begin()+j);
-                }
-                
+                    j--;
+                }    
                     if(projectilesPlayer[j].getHitbox().checkCollision(enemies[i].getHitbox())){
-
                         activeE--;
-
                         if (std::rand() % 100 <= 5){
                             vidas.emplace_back(enemies[i].getX() + enemies[i].getWidth()/2, enemies[i].getY()+enemies[i].getHeight()/2, &vidaTexture);
-
                         }
                         enemies.erase(enemies.begin() + i);
+                        i--; // Decrementar o índice para evitar pular o próximo inimigo
                         projectilesPlayer.erase(projectilesPlayer.begin()+j);
                         j--;
-                        i--; // Decrementar o índice para evitar pular o próximo inimigo
                         player.ganharPontos(10);
 
 //verifica se algo saiu da tela
@@ -199,6 +195,8 @@ int main() {
                     }
                 }
                 if (enemies[i].pew()){
+                    projectilesEnemy.emplace_back(enemies[i].getX()+enemies[i].getWidth()/2, enemies[i].getY() + enemies[i].getHeight(), 100.0f, 200.0f, &projectileTextureEnemy);
+                    projectilesEnemy.emplace_back(enemies[i].getX()+enemies[i].getWidth()/2, enemies[i].getY() + enemies[i].getHeight(), -100.0f, 200.0f, &projectileTextureEnemy);
                     projectilesEnemy.emplace_back(enemies[i].getX()+enemies[i].getWidth()/2, enemies[i].getY() + enemies[i].getHeight(), 0.0f, 200.0f, &projectileTextureEnemy);
                 }
                 
@@ -206,12 +204,14 @@ int main() {
         for (size_t i = 0; i < projectilesEnemy.size(); i++){
             if (projectilesEnemy[i].isOutOfScreen()){
                 projectilesEnemy.erase(projectilesEnemy.begin() + i); 
+                i--;
             }
             
             if (projectilesEnemy[i].getHitbox().checkCollision(player.getHitbox())){
                 player.perderVida();
-            }
-            
+                projectilesEnemy.erase(projectilesEnemy.begin() + i);
+                i--; 
+            }     
         }
            
 //////////////////////FIM VERIFICAÇÃO DE COLISÕES///////////////////Q
@@ -222,8 +222,8 @@ int main() {
         if(shotTimePlayer > shotTimerPlayer){
             shotTimePlayer = 0;
             projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), 0.0f,-200.0f, &projectileTexturePlayer);
-            // projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), 100.0f,-200.0f, &projectileTexturePlayer);
-             //projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), -100.f,-200.0f, &projectileTexturePlayer);
+            //projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), 100.0f,-200.0f, &projectileTexturePlayer);
+            //projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), -100.f,-200.0f, &projectileTexturePlayer);
             sound.play();
         }else{
             shotTimePlayer += dt;

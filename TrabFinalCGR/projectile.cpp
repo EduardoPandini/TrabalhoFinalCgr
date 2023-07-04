@@ -37,9 +37,13 @@ const Hitbox& Projectile::getHitbox() const
     return hitbox;
 }
 
-bool Projectile::isOutOfScreen() const
-{
-    return y < 0.0f;
+bool Projectile::isOutOfScreen(){
+    if (y < 0){
+        return false;
+    }else{
+        return false;
+    }
+    
 }
 
 void Projectile::setPosition(float x, float y) {

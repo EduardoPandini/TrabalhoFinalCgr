@@ -38,8 +38,8 @@ const Hitbox& Projectile::getHitbox() const
 }
 
 bool Projectile::isOutOfScreen(){
-    if (y < 0){
-        return false;
+    if (y < -5 || y > 1100){
+        return true;
     }else{
         return false;
     }

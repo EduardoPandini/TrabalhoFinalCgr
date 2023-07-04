@@ -165,6 +165,10 @@ int main() {
             }
             //colisão entre inimigo e projetil
             for(size_t j = 0; j < projectilesPlayer.size(); j++) {
+                if (projectilesPlayer[j].isOutOfScreen()){
+                    projectilesPlayer.erase(projectilesPlayer.begin()+j);
+                }
+                
                     if(projectilesPlayer[j].getHitbox().checkCollision(enemies[i].getHitbox())){
 
                         activeE--;
@@ -179,7 +183,7 @@ int main() {
                         i--; // Decrementar o índice para evitar pular o próximo inimigo
                         player.ganharPontos(10);
 
-//verifica se o inimigo saiu da tela pelo inferior
+//verifica se algo saiu da tela
 
                     } else if (enemies[i].isOutOfScreen()){
                         enemies.erase(enemies.begin() + i);
@@ -202,7 +206,7 @@ int main() {
         }else{
             shotTimePlayer += dt;
         }
-        
+
             // Lógica do jogo
             // Atualizar o texto de vidas
             txtPontos.setString("Pontos: " + std::to_string(player.getPontos()));

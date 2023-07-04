@@ -12,7 +12,10 @@ public:
     void setPosition(float x, float y);
     const Hitbox& getHitbox() const;
     bool isOutOfScreen() const;
-
+    float getX();
+    float getY();
+    float getWidth();
+    float getHeight();
     
 
 private:

@@ -68,3 +68,18 @@ bool Enemy::isOutOfScreen() const {
 const Hitbox& Enemy::getHitbox() const {
     return hitbox;
 }
+
+float Enemy::getX(){
+    return x;
+}
+
+float Enemy::getY(){
+    return y;
+}
+
+float Enemy::getWidth(){
+    return width;
+}
+float Enemy::getHeight(){
+    return height;
+}

@@ -65,6 +65,7 @@ int main() {
     }
     sf::Texture vidaTexture;
     if (!vidaTexture.loadFromFile("sprites/drops/vida.png")) {
+        std::cout << "Erro ao carregar a textura do vidas" << std::endl;
     }   
     // Texto de vidas
     sf::Text txtVidas;
@@ -116,35 +117,51 @@ int main() {
         }
 
 /////////////////////////////////FIM SPAWN/////////////////////////////////
-                // Atualizar todos os inimigos e projeteis
+                // Atualizar todos os inimigos e proieteis
         for(size_t i = 0; i < enemies.size(); i++) {
             enemies[i].update(dt);
         }
-        for(size_t j = 0; j < projectilesPlayer.size(); j++) {
-            projectilesPlayer[j].update(dt);
+        for(size_t i = 0; i < projectilesPlayer.size(); i++) {
+            projectilesPlayer[i].update(dt);
+        }
+        for(size_t i = 0; i < vidas.size(); i++) {
+            vidas[i].update(dt);
         }
 
 
 
 
 //////////////////////VERIFICAÇÃO DE COLISÕES///////////////////Q
+        for (size_t i = 0; i < vidas.size(); i++){
+            if (player.getHitbox().checkCollision(vidas[i].getHitbox()) && player.getVidas() < 5){
+                player.ganharVida();
+                vidas.erase(vidas.begin()+i);
+                i--;
+            }
+            
+        }
+        
+        
         for(size_t i = 0; i < enemies.size(); i++) {
             enemies[i].update(dt);
             //colisão entre jogador e inimigo
             if (player.getHitbox().checkCollision(enemies[i].getHitbox())) {
                 player.perderVida();
             }
-
-
-
-
+            //colisão entre inimigo e projetil
             for(size_t j = 0; j < projectilesPlayer.size(); j++) {
                     if(projectilesPlayer[j].getHitbox().checkCollision(enemies[i].getHitbox())){
+
+                        activeE--;
+
+                        if (std::rand() % 100 <= 5){
+                            vidas.emplace_back(enemies[i].getX() + enemies[i].getWidth()/2, enemies[i].getY()+enemies[i].getHeight()/2, &vidaTexture);
+
+                        }
                         enemies.erase(enemies.begin() + i);
                         projectilesPlayer.erase(projectilesPlayer.begin()+j);
                         j--;
                         i--; // Decrementar o índice para evitar pular o próximo inimigo
-                        activeE--;
                         player.ganharPontos(10);
 
 //verifica se o inimigo saiu da tela pelo inferior
@@ -202,6 +219,10 @@ int main() {
                 if(enemy.isOutOfScreen()){}
                 enemy.draw(window);
             } 
+            for (const auto& vida : vidas){
+                vida.draw(window);
+            }
+            
             player.draw(window);
             window.draw(txtVidas);
             window.draw(txtPontos);

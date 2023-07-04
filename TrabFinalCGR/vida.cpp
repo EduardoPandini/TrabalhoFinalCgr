@@ -20,10 +20,10 @@ void Vida::draw(sf::RenderWindow& window) const {
 }
 
 void Vida::update(float deltaTime) {
-    // Atualizar a posição do inimigo com base na velocidade (o inimigo está parado no exemplo)
-    // Você pode adicionar lógica para o movimento do inimigo aqui
+    
     float dx = 0.0f;
     float dy = 1.0f;
+    dy += velocityY + deltaTime;
     x += dx;
     y += dy;
     sprite.setPosition(x, y);

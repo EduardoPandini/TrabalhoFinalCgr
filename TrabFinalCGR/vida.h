@@ -22,7 +22,7 @@ private:
     sf::Texture* texture;
     sf::Sprite sprite;
     Hitbox hitbox;
-    float velocityY = 100; // Velocidade vertical 
+    float velocityY = 3.0f; // Velocidade vertical 
     void updateHorizontalMovement();
 };
 

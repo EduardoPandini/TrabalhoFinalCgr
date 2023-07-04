@@ -5,6 +5,8 @@
 #include "hitbox.h"
 #include <ctime>
 #include "projectile.h"
+#include "vida.h"
+#include <cstdlib>
 enum class GameState {
     GAME,
     GAME_OVER
@@ -16,11 +18,12 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(1360, 1000), "Jogo 2D");
     window.setFramerateLimit(60);
 
-
+    //carrega o background
     sf::Texture backgroundTexture;
     if (!backgroundTexture.loadFromFile("sprites/background/background2.png")) {
         return -1; // Encerra o programa se ocorrer um erro ao carregar a textura
     }
+
     // Criar duas sprites para o plano de fundo
     sf::Sprite backgroundSprite1(backgroundTexture);
     sf::Sprite backgroundSprite2(backgroundTexture);
@@ -38,25 +41,31 @@ int main() {
     }
 
     
-    //criação de projetil
+    //criação de projetil e vidas
     std::vector<Projectile> projectilesPlayer;
+    std::vector<Vida> vidas;
+
 
     float shotTimerPlayer = 0.5;
     float shotTimePlayer = 0;
 
 
 
-    // Criação do jogador
+    // Criação do jogador e vetores de inimigos 
     std::vector<Enemy> enemies;
     int activeE = 0;
     Player player(400.0f, 300.0f, "sprites/player/playerFront.png");
+    
+    //load das texturas de outras coisas
     sf::Texture enemyTexture;
     if (!enemyTexture.loadFromFile("sprites/enemy/enemy.png")) {
     }
     sf::Texture projectileTexture;
     if (!projectileTexture.loadFromFile("sprites/projeteis/projetilPlayer.png")) {
     }
-    
+    sf::Texture vidaTexture;
+    if (!vidaTexture.loadFromFile("sprites/drops/vida.png")) {
+    }   
     // Texto de vidas
     sf::Text txtVidas;
     txtVidas.setFont(font);
@@ -70,7 +79,9 @@ int main() {
     txtPontos.setFillColor(sf::Color::White);
 
     sf::Clock clock;
-    
+
+
+    //texto de fim de jogo 
     sf::Text gameOverText;
     gameOverText.setFont(font);
     gameOverText.setCharacterSize(50);
@@ -105,7 +116,7 @@ int main() {
         }
 
 /////////////////////////////////FIM SPAWN/////////////////////////////////
-                // Atualizar todos os inimigos
+                // Atualizar todos os inimigos e projeteis
         for(size_t i = 0; i < enemies.size(); i++) {
             enemies[i].update(dt);
         }
@@ -113,12 +124,21 @@ int main() {
             projectilesPlayer[j].update(dt);
         }
 
+
+
+
+//////////////////////VERIFICAÇÃO DE COLISÕES///////////////////Q
         for(size_t i = 0; i < enemies.size(); i++) {
             enemies[i].update(dt);
-        
-//////////////////////VERIFICAÇÃO DE COLISÕES///////////////////Q
+            //colisão entre jogador e inimigo
+            if (player.getHitbox().checkCollision(enemies[i].getHitbox())) {
+                player.perderVida();
+            }
+
+
+
+
             for(size_t j = 0; j < projectilesPlayer.size(); j++) {
-                    //verifica colisão projectil e inimigo
                     if(projectilesPlayer[j].getHitbox().checkCollision(enemies[i].getHitbox())){
                         enemies.erase(enemies.begin() + i);
                         projectilesPlayer.erase(projectilesPlayer.begin()+j);
@@ -126,14 +146,18 @@ int main() {
                         i--; // Decrementar o índice para evitar pular o próximo inimigo
                         activeE--;
                         player.ganharPontos(10);
+
+//verifica se o inimigo saiu da tela pelo inferior
+
                     } else if (enemies[i].isOutOfScreen()){
                         enemies.erase(enemies.begin() + i);
                         i--; // Decrementar o índice para evitar pular o próximo inimigo
                         activeE--;
                     }
                 }
+        }   
 //////////////////////FIM VERIFICAÇÃO DE COLISÕES///////////////////Q
-        }
+        
          
 
         //player shooto
@@ -147,14 +171,6 @@ int main() {
 
 
 
-        for (auto& enemy : enemies) {
-            enemy.update(dt);
-            // Verificar colisão entre o jogador e cada inimigo
-            if (player.getHitbox().checkCollision(enemy.getHitbox())) {
-                player.perderVida();
-            }
-
-        }
             // Lógica do jogo
             // Atualizar o texto de vidas
             txtPontos.setString("Pontos: " + std::to_string(player.getPontos()));

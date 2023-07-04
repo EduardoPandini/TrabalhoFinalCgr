@@ -17,8 +17,8 @@ public:
 
 private:
     float x, y;
-    float width = 200;
-    float height = 200;
+    float width = 50;
+    float height = 50;
     sf::Texture* texture;
     sf::Sprite sprite;
     Hitbox hitbox;

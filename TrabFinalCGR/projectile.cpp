@@ -1,7 +1,7 @@
 #include "projectile.h"
 #include <iostream>
 
-Projectile::Projectile(float x, float y, sf::Texture* texture)
+Projectile::Projectile(float x, float y, float velocityY, sf::Texture* texture)
     : x(x), y(y), texture(texture), hitbox(x, y, width, height){
     
     
@@ -12,6 +12,8 @@ Projectile::Projectile(float x, float y, sf::Texture* texture)
 
     sprite.setTexture(*texture);
     setPosition(x, y);
+
+    setvelocityY(velocityY);
 
 }
 
@@ -44,3 +46,9 @@ void Projectile::setPosition(float x, float y) {
     sprite.setPosition(x, y);
     hitbox.update(x, y);
 }
+
+
+void Projectile::setvelocityY(float velocityY){
+    this->velocityY = velocityY;
+}
+

@@ -23,8 +23,9 @@ public:
 
     // Função para obter o número de vidas do jogador
     int getVidas() const;
-
     void ganharVida();
+    void ganharPontos(int pontos);
+    int getPontos() const;
     int getx();
     int gety();
     int getw();
@@ -36,9 +37,10 @@ private:
     float positionY;
     float velocityX;
     float velocityY;
-    float width = 200;
-    float height = 200;
+    float width = 100;
+    float height = 86;
     Hitbox hitbox;
+    int pontos = 0;
     
     int vida = 3; // Número de vidas do jogador
     // Variáveis de invulnerabilidade

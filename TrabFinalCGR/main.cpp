@@ -36,10 +36,16 @@ int main() {
         std::cout << "Erro ao carregar a fonte!" << std::endl;
         return 1;
     }
+
+    
     //criação de projetil
-    std::vector<Projectile> projectiles;
-    float shooooot_timer = 0.5;
-    float shooooot_time = 0;
+    std::vector<Projectile> projectilesPlayer;
+
+    float shotTimerPlayer = 0.5;
+    float shotTimePlayer = 0;
+
+
+
     // Criação do jogador
     std::vector<Enemy> enemies;
     int activeE = 0;
@@ -56,6 +62,12 @@ int main() {
     txtVidas.setFont(font);
     txtVidas.setCharacterSize(30);
     txtVidas.setFillColor(sf::Color::Green);
+
+    // Texto de pontos
+    sf::Text txtPontos;
+    txtPontos.setFont(font);
+    txtPontos.setCharacterSize(30);
+    txtPontos.setFillColor(sf::Color::White);
 
     sf::Clock clock;
     
@@ -85,39 +97,51 @@ int main() {
             backgroundSprite1.move(0, scrollSpeed * dt);
             backgroundSprite2.move(0, scrollSpeed * dt);
 
-
-        if ( activeE < 33) {
+/////////////////////////////////SPAWN DOS INIMIGOS/////////////////////////////////
+        if ( activeE < 5) {
             activeE++;
             float randomX = static_cast<float>(rand() % 1360); // Gera um valor de x aleatório entre 0 e 1360
             enemies.emplace_back(randomX, -200.0f, &enemyTexture);
         }
-                // Atualizar todos os inimigos
 
+/////////////////////////////////FIM SPAWN/////////////////////////////////
+                // Atualizar todos os inimigos
+        for(size_t i = 0; i < enemies.size(); i++) {
+            enemies[i].update(dt);
+        }
+        for(size_t j = 0; j < projectilesPlayer.size(); j++) {
+            projectilesPlayer[j].update(dt);
+        }
 
         for(size_t i = 0; i < enemies.size(); i++) {
             enemies[i].update(dt);
-            for(size_t j = 0; j < projectiles.size(); j++) {
-                    projectiles[j].update(dt);
+        
+//////////////////////VERIFICAÇÃO DE COLISÕES///////////////////Q
+            for(size_t j = 0; j < projectilesPlayer.size(); j++) {
                     //verifica colisão projectil e inimigo
-                    if(projectiles[j].getHitbox().checkCollision(enemies[i].getHitbox()) || enemies[i].isOutOfScreen()){
+                    if(projectilesPlayer[j].getHitbox().checkCollision(enemies[i].getHitbox())){
                         enemies.erase(enemies.begin() + i);
-                        projectiles.erase(projectiles.begin()+j);
+                        projectilesPlayer.erase(projectilesPlayer.begin()+j);
                         j--;
                         i--; // Decrementar o índice para evitar pular o próximo inimigo
                         activeE--;
+                        player.ganharPontos(10);
+                    } else if (enemies[i].isOutOfScreen()){
+                        enemies.erase(enemies.begin() + i);
+                        i--; // Decrementar o índice para evitar pular o próximo inimigo
+                        activeE--;
                     }
-                
                 }
-
+//////////////////////FIM VERIFICAÇÃO DE COLISÕES///////////////////Q
         }
          
 
         //player shooto
-        if(shooooot_time > shooooot_timer){
-            shooooot_time = 0;
-            projectiles.emplace_back(player.getx()+player.getw()/2, player.gety(), &projectileTexture);
+        if(shotTimePlayer > shotTimerPlayer){
+            shotTimePlayer = 0;
+            projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5),-200.0f, &projectileTexture);
         }else{
-            shooooot_time += dt;
+            shotTimePlayer += dt;
         }
         
 
@@ -133,6 +157,8 @@ int main() {
         }
             // Lógica do jogo
             // Atualizar o texto de vidas
+            txtPontos.setString("Pontos: " + std::to_string(player.getPontos()));
+            txtPontos.setPosition(1100.0f, 10.0f);
             txtVidas.setString("Vidas: " + std::to_string(player.getVidas()));
             txtVidas.setPosition(10.0f, 10.0f);
             player.update(dt);
@@ -153,7 +179,7 @@ int main() {
         window.draw(backgroundSprite2);
         
         if (gameState == GameState::GAME) {
-            for(const auto& projectile : projectiles) {   
+            for(const auto& projectile : projectilesPlayer) {   
                 projectile.draw(window);
             }
             for (const auto& enemy : enemies) {
@@ -162,6 +188,7 @@ int main() {
             } 
             player.draw(window);
             window.draw(txtVidas);
+            window.draw(txtPontos);
         } else if (gameState == GameState::GAME_OVER) {
             window.draw(gameOverText);
         }

@@ -1,26 +1,29 @@
-#ifndef PROJECTILE_H
-#define PROJECTILE_H
+#ifndef VIDA_H
+#define VIDA_H
 
 #include <SFML/Graphics.hpp>
 #include "hitbox.h"
 
-class Projectile {
+class Vida {
 public:
-    Projectile(float x, float y, float velocityY, sf::Texture* texture);
+    Vida(float x, float y, sf::Texture* texture);
     void draw(sf::RenderWindow& window) const;
     void update(float deltaTime);
     void setPosition(float x, float y);
     const Hitbox& getHitbox() const;
     bool isOutOfScreen() const;
-    void setvelocityY(float velocityY);
+
+    
+
 private:
     float x, y;
-    float velocityY; // Velocidade vertical (direção para cima)
-    float width = 20;
-    float height = 20;
+    float width = 200;
+    float height = 200;
     sf::Texture* texture;
     sf::Sprite sprite;
     Hitbox hitbox;
+    float velocityY = 100; // Velocidade vertical 
+    void updateHorizontalMovement();
 };
 
-#endif // PROJECTILE_H
+#endif // VIDA_H

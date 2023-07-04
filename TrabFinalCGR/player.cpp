@@ -1,32 +1,29 @@
 #include "player.h"
 #include <iostream>
 #include "enemy.h"
-#include <unistd.h> // Para usar getcwd()
 
-
-std::string currentWorkingDirectory(getcwd(NULL, 0));
-std::string spritesFolderPath = "/home/pandini/Desktop/TrabFinalCGR/sprites/player/";
 
 
 
 
 Player::Player(float x, float y, const std::string& filename)
-    : x(x), y(y), hitbox(x, y, width, height), isFacingRight(true), vida(3), isInvulnerable(false), invulnerabilityTime(2.0f), invulnerabilityTimer(0.0f), shootTimer(0.0f){
+    : x(x), y(y), hitbox(x, y, width, height), isFacingRight(true), vida(3), pontos(0),
+    isInvulnerable(false), invulnerabilityTime(2.0f), invulnerabilityTimer(0.0f), shootTimer(0.0f){
     
     if (!texture.loadFromFile(filename)) {
         std::cout << "Erro ao carregar a textura do jogador!" << std::endl;
     }
 
     // Carregar as texturas do jogador virado para a esquerda, para a direita e em estado de repouso
-    if (!textureLeft.loadFromFile(spritesFolderPath + "playerLeft.png")) {
+    if (!textureLeft.loadFromFile("sprites/player/playerLeft.png")) {
         std::cout << "Erro ao carregar a textura do jogador virado para a esquerda!" << std::endl;
     }
 
-    if (!textureRight.loadFromFile(spritesFolderPath + "playerRight.png")) {
+    if (!textureRight.loadFromFile("sprites/player/playerRight.png")) {
         std::cout << "Erro ao carregar a textura do jogador virado para a direita!" << std::endl;
     }
 
-    if (!textureIdle.loadFromFile(spritesFolderPath + "playerFront.png")) {
+    if (!textureIdle.loadFromFile("sprites/player/playerFront.png")) {
         std::cout << "Erro ao carregar a textura do jogador em estado de repouso!" << std::endl;
     }
 
@@ -84,7 +81,7 @@ void Player::update(float deltaTime) {
         perderVida();
         
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::G))
-    ganharVida();
+        ganharVida();
 
 ///////////////////////FIM DO TESTE   TESTE   TESTE   TESTE   TESTE   TESTE   TESTE   TESTE   TESTE   TESTE   TESTE   TESTE   /////////////////////////////////////
 
@@ -156,3 +153,13 @@ int Player::gety() {
 int Player::getw(){
     return width;
 }
+
+void Player::ganharPontos(int npontos){
+    pontos += npontos;
+}
+
+int Player::getPontos() const { 
+    return pontos;
+}
+
+

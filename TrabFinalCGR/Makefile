@@ -3,7 +3,8 @@ CC = g++
 CFLAGS = -std=c++11 -Wall -Wextra
 
 # SFML libraries
-SFML_LIBS = -lsfml-graphics -lsfml-window -lsfml-system
+
+SFML_LIBS = -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio
 
 # Directories
 SRC_DIR = .
@@ -12,6 +13,7 @@ OBJ_DIR = obj
 # Files
 SRC_FILES = $(wildcard $(SRC_DIR)/*.cpp)
 OBJ_FILES = $(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRC_FILES))
+
 
 # Main target
 jogo2d: $(OBJ_FILES)

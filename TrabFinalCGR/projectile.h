@@ -6,16 +6,18 @@
 
 class Projectile {
 public:
-    Projectile(float x, float y, float velocityY, sf::Texture* texture);
+    Projectile(float x, float y, float velocityX, float velocityY,sf::Texture* texture);
     void draw(sf::RenderWindow& window) const;
     void update(float deltaTime);
     void setPosition(float x, float y);
     const Hitbox& getHitbox() const;
     bool isOutOfScreen() const;
     void setvelocityY(float velocityY);
+    void setvelocityX(float velocityX);
 private:
     float x, y;
     float velocityY; // Velocidade vertical (direção para cima)
+    float velocityX; 
     float width = 20;
     float height = 20;
     sf::Texture* texture;

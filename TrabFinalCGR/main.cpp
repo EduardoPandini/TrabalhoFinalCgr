@@ -7,6 +7,8 @@
 #include "projectile.h"
 #include "vida.h"
 #include <cstdlib>
+#include <SFML/Audio.hpp>
+#include <iostream>
 enum class GameState {
     GAME,
     GAME_OVER
@@ -17,6 +19,19 @@ int main() {
     //cria a janela
     sf::RenderWindow window(sf::VideoMode(1360, 1000), "Jogo 2D");
     window.setFramerateLimit(60);
+
+        // Carregue o arquivo de áudio (por exemplo, um arquivo .wav)
+    sf::SoundBuffer soundBuffer;    
+    if (!soundBuffer.loadFromFile("som/pew.wav")) {
+        std::cerr << "Failed to load sound file!" << std::endl;
+        return 1;
+    }
+
+    // Crie um objeto sf::Sound para reproduzir o som
+    sf::Sound sound(soundBuffer);
+
+    // Defina o volume do som (opcional)
+    sound.setVolume(100); // Valor entre 0 e 100
 
     //carrega o background
     sf::Texture backgroundTexture;
@@ -180,14 +195,14 @@ int main() {
         //player shooto
         if(shotTimePlayer > shotTimerPlayer){
             shotTimePlayer = 0;
-            projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5),-200.0f, &projectileTexture);
+            projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), 0.0f,-200.0f, &projectileTexture);
+            // projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), 100.0f,-200.0f, &projectileTexture);
+            // projectilesPlayer.emplace_back((player.getx()+player.getw()/2 - 10), (player.gety() + 5), -100.f,-200.0f, &projectileTexture);
+            sound.play();
         }else{
             shotTimePlayer += dt;
         }
         
-
-
-
             // Lógica do jogo
             // Atualizar o texto de vidas
             txtPontos.setString("Pontos: " + std::to_string(player.getPontos()));

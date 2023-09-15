@@ -2,12 +2,13 @@
 #include <iostream>
 #include "enemy.h"
 
-
+#define WINDOW_H 1000
+#define WINDOW_W 1360
 
 
 
 Player::Player(float x, float y, const std::string& filename)
-    : x(x), y(y), hitbox(x, y, width, height), isFacingRight(true), vida(3), pontos(0),
+    : x(x), y(y), hitbox(x, y, width, height), isFacingRight(false), vida(3), pontos(0),
     isInvulnerable(false), invulnerabilityTime(2.0f), invulnerabilityTimer(0.0f), shootTimer(0.0f){
     
     if (!texture.loadFromFile(filename)) {
@@ -95,15 +96,15 @@ void Player::update(float deltaTime) {
     if (newX < 0.0f) {
         newX = 0.0f;
     }
-    if (newX > 1360.0f - hitbox.getWidth()) {
-        newX = 1360.0f - hitbox.getWidth();
+    if (newX > WINDOW_W - hitbox.getWidth()) {
+        newX = WINDOW_W - hitbox.getWidth();
     }
 
     if (newY < 0.0f) {
         newY = 0.0f;
     }
-    if (newY > 1000.0f - hitbox.getHeight()) {
-        newY = 1000.0f - hitbox.getHeight();
+    if (newY > WINDOW_H - hitbox.getHeight()) {
+        newY = WINDOW_H - hitbox.getHeight();
     }
 
     // Atualizar a posição do jogador apenas se ele não ultrapassar os limites da tela
@@ -112,22 +113,25 @@ void Player::update(float deltaTime) {
 
     hitbox.update(x, y); // Atualiza a posição da hitbox com a nova posição do jogador
     sprite.setPosition(x, y); // Atualiza a posição do sprite
-        // Lidar com a colisão entre o jogador e o inimigo
-        if (isInvulnerable) {
-            invulnerabilityTimer += deltaTime;
-            if (invulnerabilityTimer >= invulnerabilityTime) {
-                isInvulnerable = false;
-                invulnerabilityTimer = 0.0f;
-            }
+    
+    // Lidar com a colisão entre o jogador e o inimigo
+    if (isInvulnerable) {
+        invulnerabilityTimer += deltaTime;
+        if (invulnerabilityTimer >= invulnerabilityTime) {
+            isInvulnerable = false;
+            invulnerabilityTimer = 0.0f;
         }
     }
+
+}
     
-    void Player::perderVida() {
-        if (!isInvulnerable) {
-            vida--;
-            isInvulnerable = true;
-        }
-    }   
+void Player::perderVida() {
+    if (!isInvulnerable) {
+        vida--;
+        isInvulnerable = true;
+        invulnerabilityTimer = 0.0f;
+    }
+}   
 
 const Hitbox& Player::getHitbox() const {
     return hitbox;
@@ -135,7 +139,7 @@ const Hitbox& Player::getHitbox() const {
 
 
 void Player::ganharVida(){
-    vida++;
+    if (vida <5) vida++;
 }
 
 int Player::getVidas() const {
@@ -162,4 +166,6 @@ int Player::getPontos() const {
     return pontos;
 }
 
-
+bool Player::invulneravel(){
+    return isInvulnerable;
+}

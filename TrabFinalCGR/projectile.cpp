@@ -1,6 +1,9 @@
 #include "projectile.h"
 #include <iostream>
 
+#define WINDOW_H 1000
+#define WINDOW_W 1360
+
 Projectile::Projectile(float x, float y, float velocityX,  float velocityY, sf::Texture* texture)
     : x(x), y(y), texture(texture), hitbox(x, y, width, height){
     
@@ -38,12 +41,7 @@ const Hitbox& Projectile::getHitbox() const
 }
 
 bool Projectile::isOutOfScreen(){
-    if (y < -5 || y > 1100){
-        return true;
-    }else{
-        return false;
-    }
-    
+    return (y < -5 || y > 1100);
 }
 
 void Projectile::setPosition(float x, float y) {
@@ -53,10 +51,10 @@ void Projectile::setPosition(float x, float y) {
     hitbox.update(x, y);
 }
 
-
 void Projectile::setvelocityY(float velocityY){
     this->velocityY = velocityY;
 }
+
 void Projectile::setvelocityX(float velocityX){
     this->velocityX = velocityX;
 }

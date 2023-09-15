@@ -29,6 +29,7 @@ public:
     int getx();
     int gety();
     int getw();
+    bool invulneravel();
 
 
 
@@ -41,9 +42,10 @@ private:
     float width = 100;
     float height = 86;
     Hitbox hitbox;
-    int pontos = 0;
+    bool isFacingRight;        // Flag para verificar a direção do jogador
     
-    int vida = 3; // Número de vidas do jogador
+    int vida; // Número de vidas do jogador
+    int pontos;
     // Variáveis de invulnerabilidade
     bool isInvulnerable;
     float invulnerabilityTime;
@@ -56,7 +58,6 @@ private:
     sf::Texture textureLeft;   // Textura do jogador virado para a esquerda
     sf::Texture textureRight;  // Textura do jogador virado para a direita
     sf::Texture textureIdle;   // Textura do jogador em estado de repouso
-    bool isFacingRight;        // Flag para verificar a direção do jogador
 
 
     // ... outras variáveis

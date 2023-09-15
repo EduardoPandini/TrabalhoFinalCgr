@@ -267,6 +267,8 @@ int main() {
                 vida.draw(window);
             }
             
+            
+
             player.draw(window);
             window.draw(txtVidas);
             window.draw(txtPontos);

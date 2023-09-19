@@ -29,8 +29,8 @@ private:
     float minVelocityX = -100.0f; // Velocidade mínima lateral
     float maxVelocityX = 100.0f;
     float shootTime = 3;
-    float shootTimer = 0;
     bool cantShoot;
+    float shootTimer;
     void updateHorizontalMovement();
 };
 

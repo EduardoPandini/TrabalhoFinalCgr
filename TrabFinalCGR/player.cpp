@@ -2,8 +2,8 @@
 #include <iostream>
 #include "enemy.h"
 
-#define WINDOW_H 1000
-#define WINDOW_W 1360
+#define WINDOW_H 720
+#define WINDOW_W 1280
 
 
 

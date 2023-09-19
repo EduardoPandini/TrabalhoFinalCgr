@@ -1,8 +1,8 @@
 #include "projectile.h"
 #include <iostream>
 
-#define WINDOW_H 1000
-#define WINDOW_W 1360
+#define WINDOW_H 720
+#define WINDOW_W 1280
 
 Projectile::Projectile(float x, float y, float velocityX,  float velocityY, sf::Texture* texture)
     : x(x), y(y), texture(texture), hitbox(x, y, width, height){

@@ -2,8 +2,8 @@
 #include <iostream>
 #include <cstdlib> // Para usar rand() e srand()
 
-#define WINDOW_H 1000
-#define WINDOW_W 1360
+#define WINDOW_H 720
+#define WINDOW_W 1280
 
 Enemy::Enemy(float x, float y, sf::Texture* texture)
     : x(x), y(y), texture(texture), hitbox(x, y, width, height), cantShoot(true), shootTimer(0) {

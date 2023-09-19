@@ -21,7 +21,7 @@ int main()
 {
     srand(time(NULL));
     // cria a janela
-    RenderWindow window(VideoMode(1360, 1000), "Jogo 2D");
+    RenderWindow window(VideoMode(1280, 720), "Jogo 2D");
     window.setFramerateLimit(60);
 
     // Carregue o arquivo de áudio (por exemplo, um arquivo .wav)
@@ -115,6 +115,15 @@ int main()
     gameOverText.setFillColor(Color::Red);
     gameOverText.setString("Fim de Jogo!");
 
+    // texto de tempo
+    Text gameTimeText;
+    gameTimeText.setFont(font);
+    gameTimeText.setCharacterSize(50);
+    gameTimeText.setFillColor(Color::Cyan);
+    gameTimeText.setPosition(500.0f, 10.0f);
+
+    float gametime = 0;
+
     // Inicializar o estado do jogo
     GameState gameState = GameState::GAME;
 
@@ -135,18 +144,21 @@ int main()
 
             // Enter key: restart
             if ((event.type == Event::KeyPressed) &&
-            (event.key.code == Keyboard::Enter) &&
-            gameState == GameState::GAME_OVER){
+                (event.key.code == Keyboard::Enter) &&
+                gameState == GameState::GAME_OVER)
+            {
                 gameState = GameState::GAME;
                 player = Player(400.0f, 300.0f, "sprites/player/playerFront.png");
                 activeE = 0;
+                gametime = 0;
+                gameTimeText.setPosition(500.0f, 10.0f);
             }
-
         }
 
         // Calcular o tempo decorrido entre cada frame
         Time deltaTime = clock.restart();
         float dt = deltaTime.asSeconds();
+        gametime += dt;
         if (gameState == GameState::GAME)
         {
             // Movimenta as duas sprites do plano de fundo na vertical
@@ -157,7 +169,7 @@ int main()
             if (activeE < 5)
             { // rand() % 60 == 0 &&
                 activeE++;
-                float randomX = static_cast<float>(rand() % 1360); // Gera um valor de x aleatório entre 0 e 1360
+                float randomX = static_cast<float>(rand() % 1280); // Gera um valor de x aleatório entre 0 e 1280
                 enemies.emplace_back(randomX, -200.0f, &enemyTexture);
                 // std::cout << enemies.back().getX() << std::endl;
             }
@@ -189,7 +201,7 @@ int main()
                 {
                     player.ganharVida();
                     vidas.erase(vidas.begin() + i);
-                    i-=(i!=0);
+                    i -= (i != 0);
                 }
             }
 
@@ -198,7 +210,7 @@ int main()
                 while (enemies[i].isOutOfScreen())
                 {
                     enemies.erase(enemies.begin() + i);
-                    i-=(i!=0); // Decrementar o índice para evitar pular o próximo inimigo
+                    i -= (i != 0); // Decrementar o índice para evitar pular o próximo inimigo
                     activeE--;
                 }
                 // enemies[i].update(dt);
@@ -207,7 +219,7 @@ int main()
                 {
                     player.perderVida();
                     enemies.erase(enemies.begin() + i);
-                    i-=(i!=0); // Decrementar o índice para evitar pular o próximo inimigo
+                    i -= (i != 0); // Decrementar o índice para evitar pular o próximo inimigo
                     activeE--;
                 }
                 // colisão entre inimigo e projetil
@@ -216,7 +228,7 @@ int main()
                     while (projectilesPlayer[j].isOutOfScreen())
                     {
                         projectilesPlayer.erase(projectilesPlayer.begin() + j);
-                        j -= (j!=0);
+                        j -= (j != 0);
                     }
                     while (projectilesPlayer[j].getHitbox().checkCollision(enemies[i].getHitbox()))
                     {
@@ -226,9 +238,9 @@ int main()
                             vidas.emplace_back(enemies[i].getX() + enemies[i].getWidth() / 2, enemies[i].getY() + enemies[i].getHeight() / 2, &vidaTexture);
                         }
                         enemies.erase(enemies.begin() + i);
-                        i-=(i!=0); // Decrementar o índice para evitar pular o próximo inimigo
+                        i -= (i != 0); // Decrementar o índice para evitar pular o próximo inimigo
                         projectilesPlayer.erase(projectilesPlayer.begin() + j);
-                        j -= (j!=0);
+                        j -= (j != 0);
                         player.ganharPontos(10);
                     }
                 }
@@ -244,14 +256,14 @@ int main()
                 if (projectilesEnemy[i].isOutOfScreen())
                 {
                     projectilesEnemy.erase(projectilesEnemy.begin() + i);
-                    i-=(i!=0);
+                    i -= (i != 0);
                 }
 
                 if (projectilesEnemy[i].getHitbox().checkCollision(player.getHitbox()))
                 {
                     player.perderVida();
                     projectilesEnemy.erase(projectilesEnemy.begin() + i);
-                    i-=(i!=0);
+                    i -= (i != 0);
                 }
             }
 
@@ -272,6 +284,10 @@ int main()
             // Atualizar o texto de vidas
             txtPontos.setString("Pontos: " + std::to_string(player.getPontos()));
             txtVidas.setString("Vidas: " + std::to_string(player.getVidas()));
+            std::string timetex(std::to_string(gametime));
+            timetex.resize(timetex.size()-4);
+            gameTimeText.setString(timetex);
+
             if (player.getVidas() <= 0)
             {
                 gameState = GameState::GAME_OVER;
@@ -310,10 +326,13 @@ int main()
                 vida.draw(window);
             }
 
-            player.draw(window);
+            // Piscar quando invulneravel
+            if (!player.invulneravel() || (static_cast<int>(gametime * 10) % 5 != 0))
+            {
+                player.draw(window);
+            }
             window.draw(txtVidas);
             window.draw(txtPontos);
-            window.display();
         }
 
         else if (gameState == GameState::GAME_OVER)
@@ -322,8 +341,10 @@ int main()
             projectilesEnemy.clear();
             projectilesPlayer.clear();
             vidas.clear();
+            gameTimeText.setPosition(500.0f, 300.0f);
             window.draw(gameOverText);
         }
+        window.draw(gameTimeText);
         window.display();
     }
     window.close();

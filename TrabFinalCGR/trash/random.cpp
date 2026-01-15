@@ -8,7 +8,7 @@ enum class GameState {
 };
 
 int main() {
-    sf::RenderWindow window(sf::VideoMode(1360, 768), "Jogo 2D");
+    sf::RenderWindow window(sf::VideoMode(WINDOW_W, WINDOW_H), "Jogo 2D");
     window.setFramerateLimit(60);
     sf::Font font;
     if (!font.loadFromFile("arial.ttf")) {

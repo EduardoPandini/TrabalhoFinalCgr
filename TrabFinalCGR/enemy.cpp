@@ -2,6 +2,9 @@
 #include <iostream>
 #include <cstdlib> // Para usar rand() e srand()
 
+#define WINDOW_H 720
+#define WINDOW_W 1280
+
 Enemy::Enemy(float x, float y, sf::Texture* texture)
     : x(x), y(y), texture(texture), hitbox(x, y, width, height), cantShoot(true), shootTimer(0) {
     
@@ -41,7 +44,7 @@ void Enemy::update(float deltaTime) {
     y += dy;
 
     // Limitar a posição horizontal dentro da janela
-    float windowWidth = 1360.0f; // Largura da janela (ajuste para o tamanho desejado)
+    float windowWidth = WINDOW_W; // Largura da janela (ajuste para o tamanho desejado)
     if (x < 0) {
         x = 0;
         velocityX = -velocityX; // Inverte a direção ao atingir a borda esquerda
@@ -78,7 +81,7 @@ void Enemy::setPosition(float x, float y) {
 }
 
 bool Enemy::isOutOfScreen() const {
-    return y > 1000.0f; // Define o limite inferior para remover o inimigo da tela
+    return y > WINDOW_H; // Define o limite inferior para remover o inimigo da tela
 }
 
 const Hitbox& Enemy::getHitbox() const {
